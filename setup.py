@@ -31,7 +31,7 @@ setup(
     description='A Cython implementation of L2 regularized logistic regression',
     packages=['rlr'],
     install_requires=['numpy'],
-    ext_modules=[NumpyExtension('rlr.lr', ['rlr/rlr.c'])],
+    ext_modules=[NumpyExtension('rlr.lr', ['rlr/lr.c'])],
     license='The MIT License: http://www.opensource.org/licenses/mit-license.php',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
