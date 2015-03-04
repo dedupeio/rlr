@@ -1,1 +1,1 @@
-from lr import lr
+from .lr import lr
