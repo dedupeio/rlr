@@ -13,6 +13,7 @@ setup(
     version='1.1',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
+    dependency_links = ['https://github.com/larsmans/pylbfgs/tarball/master#egg=pylbfgs'],
     install_requires=['numpy', 'pylbfgs'],
     license='Apache 2.0 License: https://www.apache.org/licenses/LICENSE-2.0',
     classifiers=[
