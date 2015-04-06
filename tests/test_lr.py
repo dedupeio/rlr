@@ -1,6 +1,6 @@
 import unittest
 import numpy
-from rlr.glr import blr
+from rlr.lr import lr
 
 class DataModelTest(unittest.TestCase) :
 
@@ -9,8 +9,7 @@ class DataModelTest(unittest.TestCase) :
         examples = numpy.array([1, 0] * 6).reshape(12, 1)
         
 
-        print blr(labels, examples, 0)
-        assert 1 == 0
+        print lr(labels, examples, 0)
 
 
     def test_b_alpha(self) :
@@ -18,16 +17,14 @@ class DataModelTest(unittest.TestCase) :
         examples = numpy.array([1, 0] * 6).reshape(12, 1)
         
 
-        print blr(labels, examples, 0)
-        assert 1 == 0
+        print lr(labels, examples, 0)
 
 
     def test_c_alpha(self) :
         labels = numpy.array([1] * 6 + [1] * 6)
         examples = numpy.array([1, 0] * 6).reshape(12, 1)
         
-        print blr(labels, examples, 0)
-        assert 1 == 0
+        print lr(labels, examples, 0)
 
 
     def test_d_alpha(self) :
@@ -37,5 +34,4 @@ class DataModelTest(unittest.TestCase) :
         case_weights = numpy.arange(1, 13) * 1./12
         case_weights = numpy.array([0.5] * 12)
 
-        print blr(labels, examples, 0, case_weights)
-        assert 1 == 0
+        print lr(labels, examples, 0, case_weights)

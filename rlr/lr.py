@@ -39,7 +39,7 @@ def gradient(x0, X, y, case_weights, alpha):
     return np.concatenate((grad_w, [grad_c]))
 
 
-def blr(labels,
+def lr(labels,
         examples,
         alpha, 
         case_weights = None) :
