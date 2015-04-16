@@ -1,11 +1,12 @@
 import numpy as np
 import lbfgs
+import scipy.optimize
 
 def phi(t):
     # logistic function, returns 1 / (1 + exp(-t))
     idx = t > 0
     out = np.empty(t.size, dtype=np.float)
-    out[idx] = 1. / (1 + np.exp(-t[idx]))
+    out[idx] = 1. / (1. + np.exp(-t[idx]))
     exp_t = np.exp(t[~idx])
     out[~idx] = exp_t / (1. + exp_t)
     return out
@@ -19,13 +20,14 @@ def loss(x0, g, X, y, case_weights, alpha):
     idx = yz > 0
     out = np.zeros_like(yz)
     out[idx] = np.log(1 + np.exp(-yz[idx]))
-    out[~idx] = (-yz[~idx] + np.log(1 + np.exp(yz[~idx])))
+    out[~idx] = (-yz[~idx] + np.log(1. + np.exp(yz[~idx])))
     out *= case_weights
     out = out.sum() / X.shape[0] + .5 * alpha * w.dot(w)
     
     g[:] = gradient(x0, X, y, case_weights, alpha)
 
     return out
+
 
 
 def gradient(x0, X, y, case_weights, alpha):
@@ -39,29 +41,23 @@ def gradient(x0, X, y, case_weights, alpha):
     return np.concatenate((grad_w, [grad_c]))
 
 
-def lr(labels,
-        examples,
-        alpha, 
-        case_weights = None) :
+def lr(labels, examples, alpha, case_weights = None) :
 
     if case_weights is None :
         case_weights = np.ones(examples.shape[0])
 
-    print case_weights
-    print alpha
-
-    print labels
     # {0,1} -> {-1,1}
     labels = labels * 2 - 1
-    print labels
 
+    start_betas = np.ones(examples.shape[1] + 1)
 
+    opt = lbfgs.LBFGS()
 
-    start_betas = np.zeros(examples.shape[1] + 1)
+    final_betas = opt.minimize(loss,
+                               x0 = start_betas,
+                               progress=None,
+                               args = (examples, labels, 
+                                       case_weights, alpha)) 
 
-    final_betas = lbfgs.fmin_lbfgs(loss,
-                                   x0 = start_betas,
-                                   args = (examples, labels, 
-                                           case_weights, alpha)) 
-
-    return final_betas
+    
+    return final_betas[:examples.shape[1]], final_betas[-1] 
