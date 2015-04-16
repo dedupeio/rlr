@@ -1,6 +1,5 @@
 import numpy as np
 import lbfgs
-import scipy.optimize
 
 def phi(t):
     # logistic function, returns 1 / (1 + exp(-t))
