@@ -51,6 +51,7 @@ def lr(labels, examples, alpha, case_weights = None) :
     start_betas = np.ones(examples.shape[1] + 1)
 
     opt = lbfgs.LBFGS()
+    opt.xtol = .00000000000000000000001
 
     final_betas = opt.minimize(loss,
                                x0 = start_betas,
