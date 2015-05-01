@@ -10,7 +10,7 @@ except ImportError :
 setup(
     name='rlr',
     url='https://github.com/datamade/rlr',
-    version='1.1',
+    version='1.4',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
     install_requires=['numpy', 'pylbfgs'],
@@ -19,7 +19,7 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: Apache 2.0 License',
+        'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
