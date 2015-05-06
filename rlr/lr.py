@@ -51,13 +51,22 @@ def lr(labels, examples, alpha, case_weights = None) :
     start_betas = np.ones(examples.shape[1] + 1)
 
     opt = lbfgs.LBFGS()
-    opt.xtol = .0001
+    opt.epsilon = 0.000001
+    opt.linesearch = 'strongwolfe'
+
 
     final_betas = opt.minimize(loss,
                                x0 = start_betas,
-                               progress=None,
+                               progress=progress,
                                args = (examples, labels, 
                                        case_weights, alpha)) 
 
     
     return final_betas[:examples.shape[1]], final_betas[-1] 
+
+def progress(x, g, fx, xnorm, gnorm, step, k, ls, *args):
+    print('fx', fx)
+    print('gnorm', gnorm)
+    print('iteration', k)
+
+    return 0
