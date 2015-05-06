@@ -54,10 +54,9 @@ def lr(labels, examples, alpha, case_weights = None) :
     opt.epsilon = 0.000001
     opt.linesearch = 'strongwolfe'
 
-
     final_betas = opt.minimize(loss,
                                x0 = start_betas,
-                               progress=progress,
+                               progress=None,
                                args = (examples, labels, 
                                        case_weights, alpha)) 
 
