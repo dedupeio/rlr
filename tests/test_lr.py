@@ -1,6 +1,6 @@
 import unittest
 import numpy
-from rlr.lr import lr, phi
+from rlr.lr import RegularizedLogisticRegression as RLR, phi
 
 class DataModelTest(unittest.TestCase) :
 
@@ -8,10 +8,11 @@ class DataModelTest(unittest.TestCase) :
         labels = numpy.array([0, 1] * 6).reshape(12, )
         examples = numpy.array([1, 0] * 6).reshape(12, 1)
 
-        weights, bias = lr(labels, examples, 0)
-        scores = numpy.dot(examples, weights) + bias
+        classifier = RLR(0, False)
 
-        numpy.testing.assert_almost_equal(phi(scores),
+        classifier.fit(examples, labels)
+
+        numpy.testing.assert_almost_equal(classifier.predict_proba(examples)[:,-1],
                                           labels,
                                           3)
 
@@ -19,11 +20,28 @@ class DataModelTest(unittest.TestCase) :
         labels = numpy.array([0, 1] * 6).reshape(12, )
         examples = numpy.array([1, 0] * 6).reshape(12, 1)
 
-        weights, bias = lr(labels, examples, 100)
-        scores = numpy.dot(examples, weights) + bias
+        classifier = RLR(10000, False)
 
-        numpy.testing.assert_almost_equal(phi(scores),
+        classifier.fit(examples, labels)
+
+        numpy.testing.assert_almost_equal(classifier.predict_proba(examples)[:,-1],
                                           numpy.array([0.5]*12),
+                                          3)
+
+    def test_cv(self) :
+        labels = (numpy.arange(120) < 50).astype(int)
+        examples = numpy.sqrt(numpy.arange(120)).reshape(120, 1)
+
+        classifier = RLR(0)
+
+        classifier.fit(examples, labels)
+        print(classifier.alpha)
+        print(classifier.bias)
+        print(classifier.weights)
+        assert 1==0
+
+        numpy.testing.assert_almost_equal(classifier.predict_proba(examples)[:,-1],
+                                          labels,
                                           3)
 
 
@@ -131,4 +149,6 @@ class DataModelTest(unittest.TestCase) :
 
         labels = numpy.array([1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1])
 
-        lr(labels, examples, 0.0001)
+        classifier = RLR(0, False)
+
+        classifier.fit(examples, labels)
