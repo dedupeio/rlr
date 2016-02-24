@@ -29,6 +29,7 @@ def gridSearch(examples,
     permutation = numpy.random.permutation(labels.size)
 
     examples = examples[permutation]
+    labels = labels[permutation]
 
     labeled_examples = (examples, labels)
 
@@ -70,7 +71,7 @@ def kFolds(labeled_examples, k):
         raise ValueError("Number of folds must be at least 2")
     
     if len(labels) < 2 :
-        raise ValueError("At least two traning datum are required")
+        raise ValueError("At least two training datum are required")
 
     for i in range(k):
         selected_indices = range(i, examples.shape[0], k)
