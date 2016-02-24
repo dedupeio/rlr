@@ -10,7 +10,7 @@ except ImportError :
 setup(
     name='rlr',
     url='https://github.com/datamade/rlr',
-    version='2.1',
+    version='2.2',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
     install_requires=['numpy', 'pylbfgs', 'future'],

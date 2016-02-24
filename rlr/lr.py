@@ -68,7 +68,7 @@ def loss(x0, g, X, y, case_weights, alpha):
     out[idx] = np.log(1 + np.exp(-yz[idx]))
     out[~idx] = (-yz[~idx] + np.log(1. + np.exp(yz[~idx])))
     out *= case_weights
-    out = out.sum() / X.shape[0] + .5 * alpha * w.dot(w)
+    out = out.sum() + .5 * alpha * w.dot(w)
     
     g[:] = gradient(x0, X, y, case_weights, alpha)
 
@@ -82,8 +82,8 @@ def gradient(x0, X, y, case_weights, alpha):
     z = X.dot(w) + c
     z = phi(y * z) 
     z0 = (z - 1) * y * case_weights
-    grad_w = X.T.dot(z0) / X.shape[0] + alpha * w
-    grad_c = z0.sum() / X.shape[0]
+    grad_w = X.T.dot(z0) + alpha * w
+    grad_c = z0.sum() 
     return np.concatenate((grad_w, [grad_c]))
 
 
