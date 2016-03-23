@@ -13,7 +13,7 @@ setup(
     version='2.3',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
-    install_requires=['numpy', 'pylbfgs', 'future'],
+    install_requires=['numpy', 'pylbfgs', 'future', 'scikit-learn'],
     license='Apache 2.0 License: https://www.apache.org/licenses/LICENSE-2.0',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
