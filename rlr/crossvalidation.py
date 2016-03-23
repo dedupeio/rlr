@@ -60,11 +60,12 @@ def gridSearch(examples,
     pool.close()
     pool.join()
 
-
     return best_alpha
 
-# http://code.activestate.com/recipes/521906-k-fold-cross-validation-partition/
+
 def kFolds(labeled_examples, k):
+    # http://code.activestate.com/recipes/521906-k-fold-cross-validation-partition/
+
     examples, labels = labeled_examples
 
     if k < 2 :
@@ -88,6 +89,7 @@ def kFolds(labeled_examples, k):
                           (i, k))
             break
 
+
 class AlphaTester(object) :
     def __init__(self, learner) : # pragma : no cover
         self.learner = learner
@@ -102,6 +104,7 @@ class AlphaTester(object) :
 
         return scorePredictions(validation_labels, predictions)
         
+
 def scorePredictions(true_labels, predictions) :
     # http://en.wikipedia.org/wiki/Matthews_correlation_coefficient
 
@@ -121,8 +124,8 @@ def scorePredictions(true_labels, predictions) :
                                * (true_distinct + false_dupes)
                                * (true_distinct + false_distinct)))
 
-
     return matthews_cc
+
 
 def reduceScores(scores) :
     
