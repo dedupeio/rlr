@@ -19,6 +19,15 @@ def gridSearch(examples,
                search_space=[.00001, .0001, .001, .01, .1, 1],
                randomize=True):
 
+    default_alpha = 0.01
+    if len(labels) < k:
+        logger.info(
+            "gridSearch: Too few labels ({0}) for kfold {1}, "
+            "returning default_alpha {2}"
+            "".format(len(labels), k, default_alpha)
+        )
+        return default_alpha
+
     if num_cores < 2 :
         from multiprocessing.dummy import Pool
     else :
