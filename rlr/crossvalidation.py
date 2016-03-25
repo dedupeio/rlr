@@ -35,10 +35,10 @@ def gridSearch(examples,
 
     pool = Pool()
 
-    permutation = numpy.random.permutation(labels.size)
-
-    examples = examples[permutation]
-    labels = labels[permutation]
+    if randomize:
+        permutation = numpy.random.permutation(len(labels))
+        examples = examples[permutation]
+        labels = labels[permutation]
 
     labeled_examples = (examples, labels)
 
