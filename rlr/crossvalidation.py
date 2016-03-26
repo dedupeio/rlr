@@ -22,7 +22,7 @@ def gridSearch(examples,
     default_alpha = 0.01
     if len(labels) < k:
         logger.info(
-            "gridSearch: Too few labels ({0}) for kfold {1}, "
+            "gridSearch: Too few labels ({0}) for kfold {1} cross-validation, "
             "returning default_alpha {2}"
             "".format(len(labels), k, default_alpha)
         )
