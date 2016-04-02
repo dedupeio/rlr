@@ -16,10 +16,13 @@ def gridSearch(examples,
                learner,
                num_cores,
                k=3,
+               reps=5,
                search_space=[.00001, .0001, .001, .01, .1, 1],
-               randomize=True):
+               default_alpha=0.01,
+               randomize=True # this arg is ignored
+               ):
 
-    default_alpha = 0.01
+
     if len(labels) < k:
         logger.info(
             "gridSearch: Too few labels ({0}) for kfold {1} cross-validation, "
@@ -35,37 +38,41 @@ def gridSearch(examples,
 
     pool = Pool()
 
-    if randomize:
-        permutation = numpy.random.permutation(len(labels))
-        examples = examples[permutation]
-        labels = labels[permutation]
-
-    labeled_examples = (examples, labels)
-
     logger.info('using cross validation to find optimum alpha...')
     best_score = 0
-    best_alpha = 0.01
+    best_alpha = default_alpha
 
     alpha_tester = AlphaTester(learner)
 
     for alpha in search_space:
+        scores = []
+        for _ in range(reps):
+            permutation = numpy.random.permutation(len(labels))
+            labeled_examples = (examples[permutation], labels[permutation])
 
-        score_jobs = [pool.apply_async(alpha_tester, 
-                                       (subset, validation, alpha))
-                      for subset, validation in 
-                      kFolds(labeled_examples, k)]
+            score_jobs = [pool.apply_async(alpha_tester,
+                                           (training, validation, alpha))
+                          for training, validation in
+                          kFolds(labeled_examples, k)]
 
-        scores = [job.get() for job in score_jobs]
-        
-        average_score = reduceScores(scores)
+            scores.extend([job.get() for job in score_jobs])
 
-        logger.debug("Average Score: %f, alpha: %s" % (average_score, alpha))
+        scores = [score for score in scores if score is not None]
+        if scores:
+            average_score = numpy.mean(scores)
+            stdev = numpy.std(scores)
+        else:
+            average_score = 0
+            stdev = 0
+
+        logger.debug("alpha {0} mean {1} std {2}".format(alpha, average_score, stdev))
 
         if average_score >= best_score :
             best_score = average_score
             best_alpha = alpha
 
-    logger.info('optimum alpha: %f' % best_alpha)
+    logger.info('best score: %f' % best_score)
+    logger.info('best alpha: %f' % best_alpha)
     pool.close()
     pool.join()
 
@@ -123,28 +130,22 @@ def scorePredictions(true_labels, predictions) :
     true_distinct = numpy.sum(predictions[true_labels == 0] <= 0.5)
     false_distinct = numpy.sum(predictions[true_labels == 1] <= 0.5)
 
-    if not (true_dupes + false_dupes) * (true_distinct + false_distinct) :
+    denom_squared = ((true_dupes + false_dupes)
+                     * (true_dupes + false_distinct)
+                     * (true_distinct + false_dupes)
+                     * (true_distinct + false_distinct))
+
+    if denom_squared == 0:
         return 0
-    
-    matthews_cc = ((true_dupes * true_distinct 
+
+    matthews_cc = ((true_dupes * true_distinct
                     - false_dupes * false_distinct)
-                   /numpy.sqrt((true_dupes + false_dupes)
-                               * (true_dupes + false_distinct)
-                               * (true_distinct + false_dupes)
-                               * (true_distinct + false_distinct)))
+                   /numpy.sqrt(denom_squared))
+
+    if numpy.isnan(matthews_cc):
+        # Shouldn't happen
+        logger.debug('matthews_cc is nan: ' + str([true_dupes, false_dupes, true_distinct, false_distinct]))
+        return 0
 
     return matthews_cc
-
-
-def reduceScores(scores) :
-    
-    scores = [score for score in scores if score is not None]
-
-    if scores :
-        average_score = sum(scores)/len(scores)
-    else :
-        average_score = 0
-
-    return average_score
-
 
