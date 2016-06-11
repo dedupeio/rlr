@@ -8,8 +8,8 @@ class RegularizedLogisticRegression(object) :
         self.cv = cv
         self.num_cores = num_cores
 
-    def fit(self, examples, labels, case_weights=None) :
-        if self.cv :
+    def fit(self, examples, labels, case_weights=None, cv=True) :
+        if cv and self.cv :
             self.alpha = gridSearch(examples, 
                                     labels, 
                                     self, 
