@@ -10,10 +10,10 @@ except ImportError :
 setup(
     name='rlr',
     url='https://github.com/datamade/rlr',
-    version='2.4',
+    version='2.4.1',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
-    install_requires=['numpy', 'pylbfgs', 'future'],
+    install_requires=['numpy', 'pylbfgs', 'future>=0.14'],
     license='Apache 2.0 License: https://www.apache.org/licenses/LICENSE-2.0',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
