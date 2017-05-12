@@ -3,7 +3,7 @@ L2 Regularized Logistic Regression With Case Weighting
 
 Minimal dependency logistic regression classifer with L2 Regularization and optional case weighting.
 
-[![Build Status](https://travis-ci.org/datamade/rlr.svg)](https://travis-ci.org/datamade/rlr)
+[![Build Status](https://travis-ci.org/dedupeio/rlr.svg)](https://travis-ci.org/dedupeio/rlr)
 
 ```python
 labels = numpy.array([1] * 6 + [0] * 6)
