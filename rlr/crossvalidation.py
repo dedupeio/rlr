@@ -6,6 +6,7 @@ from builtins import range
 import numpy
 import logging
 import warnings
+import collections
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,39 +25,38 @@ def gridSearch(examples,
     else :
         from .backport import Pool
 
+    repeats = max(1, int(150/len(labels)))
+
     pool = Pool()
 
-    permutation = numpy.random.permutation(labels.size)
-
-    examples = examples[permutation]
-    labels = labels[permutation]
-
-    labeled_examples = (examples, labels)
-
     logger.info('using cross validation to find optimum alpha...')
-    best_score = 0
-    best_alpha = 0.01
 
     alpha_tester = AlphaTester(learner)
+    alpha_scores = collections.defaultdict(list)
 
-    for alpha in search_space:
+    for repeat in range(repeats):
+        permutation = numpy.random.permutation(labels.size)
 
-        score_jobs = [pool.apply_async(alpha_tester, 
-                                       (subset, validation, alpha))
-                      for subset, validation in 
-                      kFolds(labeled_examples, k)]
+        examples = examples[permutation]
+        labels = labels[permutation]
 
-        scores = [job.get() for job in score_jobs]
+        labeled_examples = (examples, labels)
         
-        average_score = reduceScores(scores)
+        for alpha in search_space:
 
-        logger.debug("Average Score: %f, alpha: %s" % (average_score, alpha))
+            score_jobs = [pool.apply_async(alpha_tester,
+                                           (subset, validation, alpha))
+                          for subset, validation in
+                          kFolds(labeled_examples, k)]
 
-        if average_score >= best_score :
-            best_score = average_score
-            best_alpha = alpha
+            scores = [job.get() for job in score_jobs]
 
-    logger.info('optimum alpha: %f' % best_alpha)
+            alpha_scores[alpha].extend(scores)
+
+    best_alpha, score = max(alpha_scores.items(),
+                            key=lambda x: reduceScores(x[1]))
+
+    logger.info('optimum alpha: %f, score %s' % (best_alpha, reduceScores(score)))
     pool.close()
     pool.join()
 
@@ -125,8 +125,9 @@ def scorePredictions(true_labels, predictions) :
     return matthews_cc
 
 def reduceScores(scores) :
-    
-    scores = [score for score in scores if score is not None]
+
+    scores = [score for score in scores
+              if score is not None and not numpy.isnan(score)]
 
     if scores :
         average_score = sum(scores)/len(scores)
