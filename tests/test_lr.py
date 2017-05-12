@@ -1,6 +1,6 @@
 import unittest
 import numpy
-from rlr.lr import RegularizedLogisticRegression as RLR, phi
+from rlr.lr import RegularizedLogisticRegression as RLR, phi, gridSearch
 import itertools
 
 class DataModelTest(unittest.TestCase) :
@@ -165,7 +165,7 @@ class DataModelTest(unittest.TestCase) :
             numpy.testing.assert_almost_equal(a, b)
 
 
-    def test_stability_cv(self):
+    def test_gridsearch(self):
         examples = numpy.array([[ 0.32363278,  0.40278021,  0.0999007 ],
                                 [ 0.32363278,  0.65415895,  0.06500483],
                                 [ 0.32363278,  0.43124139,  0.33864626],
@@ -173,13 +173,13 @@ class DataModelTest(unittest.TestCase) :
                                 [ 0.23200932,  0.37879705,  0.87567651]])
         labels = numpy.array([0, 0, 1, 1, 1])
 
-        weights = []
+        alphas = []
         classifier = RLR()
         for _ in range(10):
-            classifier.fit(examples, labels)
-            weights.append(classifier.weights)
+            alpha = gridSearch(examples, labels, classifier,
+                               classifier.num_cores, classifier.cv)
+            alphas.append(alpha)
 
-        for a, b in itertools.combinations(weights, 2):
-            numpy.testing.assert_almost_equal(a, b)
+        assert len(set(alphas)) == 1
             
         
