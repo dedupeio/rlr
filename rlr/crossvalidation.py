@@ -105,11 +105,11 @@ class AlphaTester(object) :
 def scorePredictions(true_labels, predictions) :
     # http://en.wikipedia.org/wiki/Matthews_correlation_coefficient
 
-    true_dupes = numpy.sum(predictions[true_labels == 1] > 0.5)
-    false_dupes = numpy.sum(predictions[true_labels == 0] > 0.5)
+    true_dupes = int(numpy.sum(predictions[true_labels == 1] > 0.5))
+    false_dupes = int(numpy.sum(predictions[true_labels == 0] > 0.5))
 
-    true_distinct = numpy.sum(predictions[true_labels == 0] <= 0.5)
-    false_distinct = numpy.sum(predictions[true_labels == 1] <= 0.5)
+    true_distinct = int(numpy.sum(predictions[true_labels == 0] <= 0.5))
+    false_distinct = int(numpy.sum(predictions[true_labels == 1] <= 0.5))
 
     if not (true_dupes + false_dupes) * (true_distinct + false_distinct) :
         return 0
