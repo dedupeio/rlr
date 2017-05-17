@@ -214,5 +214,5 @@ class DataModelTest(unittest.TestCase) :
 
             assert len(set(alphas)) == 1
             
- if __name__ == '__main__':
+if __name__ == '__main__':
     unittest.main()
