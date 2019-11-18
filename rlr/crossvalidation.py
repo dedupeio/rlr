@@ -8,7 +8,6 @@ import logging
 import warnings
 import collections
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
