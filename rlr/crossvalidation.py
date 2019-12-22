@@ -17,9 +17,11 @@ def gridSearch(examples,
                learner,
                num_cores,
                k=3,
-               search_space=[.00001, .0001, .001, .01, .1, 1],
+               search_space=None,
                randomize=True):
 
+    if search_space is None:
+        search_space = [.00001, .0001, .001, .01, .1, 1]
     if num_cores < 2 :
         from multiprocessing.dummy import Pool
     else :
