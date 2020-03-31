@@ -3,6 +3,8 @@ L2 Regularized Logistic Regression With Case Weighting
 
 Minimal dependency logistic regression classifer with L2 Regularization and optional case weighting.
 
+Part of the [Dedupe.io](https://dedupe.io/) cloud service and open source toolset for de-duplicating and finding fuzzy matches in your data.
+
 [![Build Status](https://travis-ci.org/dedupeio/rlr.svg)](https://travis-ci.org/dedupeio/rlr)
 
 ```python
