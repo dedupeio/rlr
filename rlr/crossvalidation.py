@@ -61,7 +61,7 @@ def gridSearch(examples,
     pool.join()
 
 
-    return best_alpha
+    return best_alpha, reduceScores(score)
 
 # http://code.activestate.com/recipes/521906-k-fold-cross-validation-partition/
 def kFolds(labeled_examples, k):
