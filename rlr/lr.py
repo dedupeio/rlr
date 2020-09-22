@@ -10,13 +10,13 @@ class RegularizedLogisticRegression(object) :
 
     def fit(self, examples, labels, case_weights=None, cv=True) :
         if cv and self.cv :
-            self.alpha = gridSearch(examples, 
+            self.alpha, crossval_score  = gridSearch(examples, 
                                     labels, 
                                     self, 
                                     self.num_cores, 
                                     self.cv)
 
-        return self.fit_alpha(examples, labels, case_weights)
+        return self.fit_alpha(examples, labels, case_weights), crossval_score
 
     def fit_alpha(self, examples, labels, case_weights) :
 
