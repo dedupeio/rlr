@@ -10,7 +10,7 @@ except ImportError :
 setup(
     name='rlr',
     url='https://github.com/dedupeio/rlr',
-    version='2.4.4',
+    version='2.4.5',
     description='Case weighted L2 regularized logistic regression',
     packages=['rlr'],
     install_requires=['numpy>=1.13.1', 'pylbfgs', 'future>=0.14'],
