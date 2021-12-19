@@ -27,7 +27,7 @@ elif "mkl_core" in config_info:
     MULTIPROCESSING = False
 elif platform.system() == 'Windows':
     logger.warning(
-        "Dedupe does not currently support multiprocessing on Windows")
+        "rlr does not currently support multiprocessing on Windows")
     MULTIPROCESSING = False
 
 if MULTIPROCESSING:
