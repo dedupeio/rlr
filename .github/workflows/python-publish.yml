@@ -1,0 +1,65 @@
+name: tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: [3.7, 3.8, 3.9, "3.10"]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -e .
+    - name: Test with pytest
+      run: |        
+        pip install -r requirements.txt
+        pytest tests
+    - name: Coveralls
+      env:
+        COVERALLS_PARALLEL: true
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+        coveralls
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@57daa114ba54fd8e1c8563e8027325c0bf2f5e80
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true        
+  wheels:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')  
+    needs: test
+    name: Build wheels
+    runs-on: linux
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v2
+    - name: Build sdist
+      run: |
+        pip install wheel setuptools
+        python setup.py sdist
+        pip wheel .
+    - name: Publish wheels to PyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        pip install twine
+        twine upload --skip-existing wheelhouse/*.whl
+        twine upload dist/*
+      continue-on-error: true
+
