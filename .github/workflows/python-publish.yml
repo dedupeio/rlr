@@ -49,16 +49,14 @@ jobs:
     - uses: actions/setup-python@v2
     - name: Build sdist
       run: |
-        pip install wheel setuptools
-        python setup.py sdist
-        pip wheel .
+        pip install wheel setuptools build
+        python -m build
     - name: Publish wheels to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         pip install twine
-        twine upload --skip-existing wheelhouse/*.whl
         twine upload dist/*
       continue-on-error: true
 
